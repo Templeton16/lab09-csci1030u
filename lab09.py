@@ -10,34 +10,75 @@
 
 def two_sum(nums, target):
     # Outline (write your plan here first):
-    #   ...
-    # TODO: return the indices [i, j] (i < j) of the two numbers in `nums` that add up
-    #   to `target`. Assume there is exactly one answer.
-    pass
+    #   I need to find two numbers that add to target.
+    #   For [3, 2, 4] and target 6, 2 needs 4, which appears later.
+    #   I will keep track of numbers seen so far and their positions.
+    seen = {}
+
+    for i in range(len(nums)):
+        other = target - nums[i]
+        if other in seen:
+            return [seen[other], i]
+        seen[nums[i]] = i
+
+    return [-1, -1]
 
 
 def max_profit(prices):
     # Outline:
-    #   ...
-    # TODO: `prices[i]` is a stock price on day i. Return the most profit obtainable by
-    #   buying on one day and selling on a LATER day. If no profit is possible, return 0.
-    pass
+    #   Buy before selling, so I track the lowest price seen.
+    #   At each later price, compare the possible profit with my best profit.
+    #   [7, 1, 5, 3, 6, 4] gives 5 by buying at 1 and selling at 6.
+    if not prices:
+        return 0
+
+    lowest = prices[0]
+    best = 0
+
+    for price in prices:
+        if price < lowest:
+            lowest = price
+        elif price - lowest > best:
+            best = price - lowest
+
+    return best
 
 
 def max_subarray(nums):
     # Outline:
-    #   ...
-    # TODO: return the largest sum of any contiguous (in-a-row) block of numbers in
-    #   `nums`. The list has at least one number.
-    pass
+    #   I keep the sum of the current block and the largest sum found.
+    #   If the current block becomes negative, I start again at the next number.
+    #   For [-2, 1, -3], 1 is the largest subarray.
+    current = nums[0]
+    largest = nums[0]
+
+    for value in nums[1:]:
+        current = current + value
+        if value > current:
+            current = value
+        if current > largest:
+            largest = current
+
+    return largest
 
 
 def is_balanced(s):   # Part 4 - stretch (optional)
     # Outline:
-    #   ...
-    # TODO: return True if every bracket in `s` is closed correctly and in the right
-    #   order. The brackets are ( ) [ ] { }. (Hint: a list used as a stack works well.)
-    pass
+    #   Opening brackets go onto a stack.
+    #   A closing bracket must match the most recent opening bracket.
+    #   At the end, the stack should be empty.
+    matching = {')': '(', ']': '[', '}': '{'}
+    stack = []
+
+    for ch in s:
+        if ch in '([{':
+            stack.append(ch)
+        elif ch in matching:
+            if len(stack) == 0 or stack[-1] != matching[ch]:
+                return False
+            stack.pop()
+
+    return not stack
 
 
 def main():
